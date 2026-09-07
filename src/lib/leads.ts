@@ -13,6 +13,8 @@
  * Schema: supabase/migrations/20260901_sevbo_leads.sql
  */
 
+import { firstArrival } from "./lead-attribution";
+
 // These name the ONE database that actually holds sevbo_leads and sevbo_events.
 // Do not swap them for the generic VITE_SUPABASE_* variables: Lovable Cloud
 // writes those into .env pointing at its own empty database, which silently
@@ -60,15 +62,15 @@ function sessionId(): string {
 
 function attribution() {
   if (typeof window === "undefined") return {};
-  const q = new URLSearchParams(window.location.search);
+  const arrival = firstArrival();
   return {
     page_path: window.location.pathname.slice(0, 400),
-    page_url: window.location.href.slice(0, 800),
-    referrer: document.referrer.slice(0, 800) || null,
-    utm_source: q.get("utm_source"),
-    utm_medium: q.get("utm_medium"),
-    utm_campaign: q.get("utm_campaign"),
-    gclid: q.get("gclid"),
+    page_url: `${window.location.origin}${arrival.landing_path}`,
+    referrer: arrival.referrer,
+    utm_source: arrival.utm_source,
+    utm_medium: arrival.utm_medium,
+    utm_campaign: arrival.utm_campaign,
+    gclid: arrival.gclid,
     user_agent: navigator.userAgent.slice(0, 500),
     session_id: sessionId(),
   };
@@ -119,8 +121,10 @@ export function trackEvent(
 
   // Mirror into Google Analytics / Ads / Meta if any of them are installed later.
   const w = window as unknown as Record<string, ((...a: unknown[]) => void) | undefined>;
-  w["gtag"]?.("event", event, { event_category: "contact", ...extra });
-  if (event === "form_submit") w["fbq"]?.("track", "Lead");
+  try {
+    w["gtag"]?.("event", event, { event_category: "contact", ...extra });
+    if (event === "form_submit") w["fbq"]?.("track", "Lead");
+  } catch { /* A reporting script cannot turn a saved request into a failure. */ }
 }
 
 /* ------------------------------------------------------------------ */
@@ -154,6 +158,9 @@ export async function submitLead(input: LeadInput): Promise<LeadResult> {
 
   const body = await res.json().catch(() => null);
   if (!res.ok) throw new Error(body?.message ?? `HTTP ${res.status}`);
+  if (body?.ok !== true || typeof body.reference !== "string" || !body.reference.trim()) {
+    throw new Error("receipt_missing");
+  }
 
   trackEvent("form_submit", {
     channel: "form",

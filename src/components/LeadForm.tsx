@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { links } from "@/components/ContactDock";
 import { CITIES, SERVICES } from "@/data/seo";
 import { leadErrorMessage, submitLead, trackEvent } from "@/lib/leads";
@@ -33,6 +33,7 @@ export function LeadForm({
   const [error, setError] = useState("");
   const [reference, setReference] = useState("");
   const [started, setStarted] = useState(false);
+  const sending = useRef(false);
 
   const onFocus = () => {
     if (started) return;
@@ -42,6 +43,7 @@ export function LeadForm({
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (sending.current) return;
     const fd = new FormData(e.currentTarget);
     // Honeypot: bots fill every field, people never see this one.
     if (String(fd.get("company") ?? "").trim()) {
@@ -49,6 +51,7 @@ export function LeadForm({
       setReference("OK");
       return;
     }
+    sending.current = true;
     setState("sending");
     setError("");
     try {
@@ -66,6 +69,8 @@ export function LeadForm({
     } catch (err) {
       setError(leadErrorMessage(err, links.emailDisplay));
       setState("error");
+    } finally {
+      sending.current = false;
     }
   };
 

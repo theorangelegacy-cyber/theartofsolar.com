@@ -161,6 +161,33 @@ function ServicePage() {
         </section>
       )}
 
+      {s.slug === "solar-panel-removal-and-reinstall" && (
+        <section className="container-x py-12 sm:py-16">
+          <p className="eyebrow">Plan the roof work</p>
+          <h2 className="mt-3 text-2xl font-extrabold text-navy sm:text-3xl">
+            Before you book panel removal
+          </h2>
+          <p className="mt-3 max-w-2xl text-base text-muted-foreground">
+            Use the cost guide to prepare your quote questions. If a roofer is already involved,
+            share the detach and reset guide so the roof work and panel work can be planned together.
+          </p>
+          <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+            <li className="rounded-2xl border border-line bg-white p-5">
+              <Link to="/solar-panel-removal-cost" className="font-semibold text-navy underline hover:text-orange-deep">
+                Solar panel removal and reinstall cost guide
+              </Link>
+              <p className="mt-2 text-sm text-muted-foreground">Panel count, roof access, hardware and what to ask about in a written quote.</p>
+            </li>
+            <li className="rounded-2xl border border-line bg-white p-5">
+              <Link to="/solar-detach-and-reset" className="font-semibold text-navy underline hover:text-orange-deep">
+                Detach and reset coordination for roofers
+              </Link>
+              <p className="mt-2 text-sm text-muted-foreground">The existing roofer guide and contact route for a project that needs both crews.</p>
+            </li>
+          </ul>
+        </section>
+      )}
+
       <Faqs items={s.faqs} heading={`${s.name}: common questions`} />
 
       <section className="container-x py-6 sm:py-10">
