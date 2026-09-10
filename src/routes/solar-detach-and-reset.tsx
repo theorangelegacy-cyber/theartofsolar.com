@@ -11,11 +11,12 @@ import {
 import { LeadForm } from "@/components/LeadForm";
 import { COUNTIES, SITE_URL, citiesInCounty } from "@/data/seo";
 import { abs, breadcrumbSchema, faqSchema, ld, serviceSchema } from "@/data/schema";
+import { IMG } from "@/data/images";
 import { trackEvent } from "@/lib/leads";
 
 const HERO_IMG = "/img/rerack.webp";
 const URL = `${SITE_URL}/solar-detach-and-reset`;
-const TITLE = "Solar Detach and Reset for Roofers | Florida";
+const TITLE = "Detach and Reset Solar Panels in Florida | For Roofers";
 const DESC =
   "Detach and reset subcontractor for Florida roofers. We pull the array and the solar permit, you tear off, we reset on new flashed mounts.";
 
@@ -62,10 +63,10 @@ export const Route = createFileRoute("/solar-detach-and-reset")({
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
       { property: "og:url", content: URL },
-      { property: "og:image", content: abs(HERO_IMG) },
+      { property: "og:image", content: abs(IMG.og) },
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESC },
-      { name: "twitter:image", content: abs(HERO_IMG) },
+      { name: "twitter:image", content: abs(IMG.og) },
     ],
     links: [{ rel: "canonical", href: URL }],
     scripts: [

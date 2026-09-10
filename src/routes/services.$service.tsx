@@ -11,7 +11,7 @@ import {
 import { LeadForm } from "@/components/LeadForm";
 import { COUNTIES, SERVICE_BY_SLUG, SERVICES, SITE_URL, citiesInCounty } from "@/data/seo";
 import { abs, breadcrumbSchema, faqSchema, ld, serviceSchema } from "@/data/schema";
-import { srcSet } from "@/data/images";
+import { IMG, IMG_ALT, srcSet } from "@/data/images";
 import { RESCUES } from "@/data/rescues";
 
 export const Route = createFileRoute("/services/$service")({
@@ -34,10 +34,10 @@ export const Route = createFileRoute("/services/$service")({
         { property: "og:title", content: title },
         { property: "og:description", content: desc },
         { property: "og:url", content: url },
-        { property: "og:image", content: abs(s.img) },
+        { property: "og:image", content: abs(IMG.og) },
         { name: "twitter:title", content: title },
         { name: "twitter:description", content: desc },
-        { name: "twitter:image", content: abs(s.img) },
+        { name: "twitter:image", content: abs(IMG.og) },
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
@@ -105,7 +105,7 @@ function ServicePage() {
           src={s.img}
           srcSet={srcSet(s.img)}
           sizes="(min-width: 1024px) 45vw, 100vw"
-          alt={s.name}
+          alt={IMG_ALT[s.img] ?? s.name}
           width={800}
           height={600}
           className="aspect-[4/3] w-full self-start rounded-3xl border border-line object-cover"

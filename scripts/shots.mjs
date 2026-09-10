@@ -78,8 +78,9 @@ for (const size of SIZES) {
   const page = await ctx.newPage();
   await page.goto(pathToFileURL(join(root, "public", "img", "og-source.html")).href, { waitUntil: "networkidle" });
   await page.waitForTimeout(300);
-  await page.screenshot({ path: join(root, "public", "img", "og.png"), type: "png" });
-  console.log("og.png written");
+  // JPG, not PNG: the PNG of this card was 835 KB and LinkedIn will not take WebP.
+  await page.screenshot({ path: join(root, "public", "img", "og.jpg"), type: "jpeg", quality: 88 });
+  console.log("og.jpg written");
   await ctx.close();
 }
 

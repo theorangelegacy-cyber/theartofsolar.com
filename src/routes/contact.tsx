@@ -10,7 +10,7 @@ import { trackEvent } from "@/lib/leads";
 export const Route = createFileRoute("/contact")({
   head: () => {
     const url = `${SITE_URL}/contact`;
-    const title = "Free Solar Re-Rack or Repair Quote | Art of Solar";
+    const title = "Free Solar Panel Removal or Repair Quote | Art of Solar";
     const desc =
       "Send the address, panel count and a photo of the array. You get a written quote for removal, reinstall, leak repair or system rescue. Orlando to Miami.";
     return {
@@ -59,7 +59,7 @@ function ContactPage() {
       <section className="container-x grid gap-8 py-12 sm:py-20 lg:grid-cols-[0.85fr_1.15fr]">
         <div className="space-y-6">
           <div className="rounded-3xl border border-line bg-white p-6">
-            <p className="eyebrow">Email</p>
+            <h2 className="eyebrow">Email</h2>
             <a
               href={links.email}
               onClick={() => trackEvent("email_click", { channel: "email", label: "contact-page" })}
@@ -69,7 +69,7 @@ function ContactPage() {
             </a>
             {links.hasPhone && (
               <>
-                <p className="eyebrow mt-5">Call or text</p>
+                <h2 className="eyebrow mt-5">Call or text</h2>
                 <a
                   href={links.call}
                   onClick={() => trackEvent("call_click", { channel: "call", label: "contact-page" })}
@@ -79,7 +79,7 @@ function ContactPage() {
                 </a>
               </>
             )}
-            <p className="eyebrow mt-5">Facebook</p>
+            <h2 className="eyebrow mt-5">Facebook</h2>
             <a
               href={links.facebookMessage}
               target="_blank"
@@ -102,7 +102,7 @@ function ContactPage() {
           </div>
 
           <div className="rounded-3xl border border-line bg-white p-6">
-            <p className="eyebrow">What helps</p>
+            <h2 className="eyebrow">What helps</h2>
             <ul className="mt-3 space-y-2 text-sm text-navy">
               {[
                 "The address, so we know the county and the utility",
@@ -122,7 +122,7 @@ function ContactPage() {
           </div>
 
           <div className="rounded-3xl bg-navy p-6 text-white">
-            <p className="eyebrow">Service area</p>
+            <h2 className="eyebrow">Service area</h2>
             <p className="mt-3 text-sm text-white/80">
               {COUNTIES.map((k) => k.name).join(", ")} counties.
             </p>

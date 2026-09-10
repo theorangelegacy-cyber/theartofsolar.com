@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ContactDock, links } from "@/components/ContactDock";
 import { PageHero, SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import { BRAND, SITE_URL } from "@/data/seo";
+import { breadcrumbSchema, ld } from "@/data/schema";
 
 export const Route = createFileRoute("/privacy-policy")({
   head: () => ({
@@ -14,6 +15,14 @@ export const Route = createFileRoute("/privacy-policy")({
       { name: "robots", content: "noindex, follow" },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/privacy-policy` }],
+    scripts: [
+      ...ld(
+        breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Privacy policy", path: "/privacy-policy" },
+        ]),
+      ),
+    ],
   }),
   component: PrivacyPage,
 });

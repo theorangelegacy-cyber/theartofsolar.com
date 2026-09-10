@@ -15,7 +15,7 @@ import { IMG } from "@/data/images";
 export const Route = createFileRoute("/service-areas/")({
   head: () => {
     const url = `${SITE_URL}/service-areas`;
-    const title = "Service Areas: Orlando to Miami | Art of Solar";
+    const title = "Solar Panel Removal & Repair Areas: Orlando to Miami";
     const desc =
       "Solar panel removal, reinstall and repair in Orange, Seminole, Osceola, Brevard, Indian River, St. Lucie, Martin, Palm Beach, Broward and Miami-Dade counties.";
     return {

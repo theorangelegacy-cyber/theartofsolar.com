@@ -15,8 +15,24 @@ export const IMG = {
   logoPhoto: "/img/logo-photo.webp",
   before: "/img/before.webp",
   after: "/img/after.webp",
-  /** Social share card, 1200 x 630. */
-  og: "/img/og.png",
+  /**
+   * Social share card, 1200 x 630. JPG, not WebP: LinkedIn refuses WebP share
+   * images and shows the link with no picture at all. The same artwork as a PNG
+   * was 835 KB, and a photo this size cannot go under 200 KB as a PNG without
+   * visible banding in the sky.
+   */
+  og: "/img/og.jpg",
+};
+
+/** What is actually in each service photo. Alt text describes the picture, not the service. */
+export const IMG_ALT: Record<string, string> = {
+  "/img/rerack.webp": "Solar panels reinstalled on a barrel tile roof with new mounts and conduit runs",
+  "/img/orphan.webp":
+    "Solar array on the shingle roof of a single-storey Florida house, seen from the street",
+  "/img/leak.webp": "Close-up of a solar mount and junction box penetrating a tile roof",
+  "/img/inspect.webp": "Aerial view of a solar array spread across several tile roof planes",
+  "/img/storm.webp": "Aerial view of black solar panels on a shingle roof beside satellite dishes",
+  "/img/new-install.webp": "Newly installed solar array on a shingle roof, seen from above",
 };
 
 export const GALLERY: { src: string; alt: string }[] = [

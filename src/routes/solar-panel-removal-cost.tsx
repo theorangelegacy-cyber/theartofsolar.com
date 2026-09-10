@@ -10,12 +10,20 @@ import {
 } from "@/components/SiteChrome";
 import { LeadForm } from "@/components/LeadForm";
 import { COUNTIES, SITE_URL, citiesInCounty } from "@/data/seo";
-import { abs, breadcrumbSchema, faqSchema, ld, serviceSchema } from "@/data/schema";
+import {
+  ORGANIZATION_ID,
+  abs,
+  breadcrumbSchema,
+  faqSchema,
+  ld,
+  serviceSchema,
+} from "@/data/schema";
+import { IMG } from "@/data/images";
 import { trackEvent } from "@/lib/leads";
 
 const HERO_IMG = "/img/rerack.webp";
 const URL = `${SITE_URL}/solar-panel-removal-cost`;
-const TITLE = "Solar Panel Removal and Reinstall Cost in Florida (2026)";
+const TITLE = "Solar Panel Removal Cost in Florida (2026 Prices)";
 const DESC =
   "What it really costs to take solar panels off for a new roof in Florida and put them back: per-panel prices and what a fair quote includes.";
 
@@ -81,6 +89,29 @@ const DRIVERS = [
   },
 ];
 
+/**
+ * This page already publishes $250 to $500 per panel in plain sight, so the
+ * same two numbers can be said in schema. A published range only: never a
+ * single "from" price, never a made-up expiry, never a rating nobody left.
+ */
+const PRICE_LD = {
+  "@context": "https://schema.org",
+  "@type": "Offer",
+  "@id": `${URL}#price`,
+  name: "Solar panel removal and reinstall, per panel",
+  url: URL,
+  itemOffered: { "@id": `${URL}#service` },
+  offeredBy: { "@id": ORGANIZATION_ID },
+  areaServed: { "@type": "State", name: "Florida" },
+  priceSpecification: {
+    "@type": "UnitPriceSpecification",
+    priceCurrency: "USD",
+    minPrice: 250,
+    maxPrice: 500,
+    unitText: "panel",
+  },
+};
+
 export const Route = createFileRoute("/solar-panel-removal-cost")({
   head: () => ({
     meta: [
@@ -89,10 +120,10 @@ export const Route = createFileRoute("/solar-panel-removal-cost")({
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
       { property: "og:url", content: URL },
-      { property: "og:image", content: abs(HERO_IMG) },
+      { property: "og:image", content: abs(IMG.og) },
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESC },
-      { name: "twitter:image", content: abs(HERO_IMG) },
+      { name: "twitter:image", content: abs(IMG.og) },
     ],
     links: [{ rel: "canonical", href: URL }],
     scripts: [
@@ -108,6 +139,7 @@ export const Route = createFileRoute("/solar-panel-removal-cost")({
           { name: "Removal and reinstall cost", path: "/solar-panel-removal-cost" },
         ]),
         faqSchema(FAQS),
+        PRICE_LD,
       ),
     ],
   }),

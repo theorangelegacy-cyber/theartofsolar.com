@@ -996,3 +996,26 @@ export const GENERAL_FAQS = [
     a: "Yes. All work is done by licensed and insured crews, permitted where the county requires it, and inspected.",
   },
 ];
+
+/** "St." and friends never end a sentence, so a plain full-stop split mangles them. */
+const HOOK_ABBR = /\b(?:St|Ft|Mt|Dr|Mr|Ms|Rd|Ave|Jr|Sr)\.$/;
+function firstSentence(text: string): string {
+  const parts = text.split(/(?<=\.)\s+/);
+  let out = "";
+  for (const p of parts) {
+    out = out ? `${out} ${p}` : p;
+    if (!HOOK_ABBR.test(out.trim())) break;
+  }
+  return out.trim().replace(/\.$/, "");
+}
+/**
+ * The longest whole statement out of a blurb that still fits the budget.
+ * Sentence first, then before the colon, then before the comma. Never a fragment.
+ */
+export function pickHook(blurb: string, budget: number): string | null {
+  const s = firstSentence(blurb);
+  const fits = [s, s.split(":")[0]!.trim(), s.split(":")[0]!.split(",")[0]!.trim()].filter(
+    (c) => c.length >= 25 && c.length <= budget,
+  );
+  return fits.length ? fits.sort((a, b) => b.length - a.length)[0]! : null;
+}

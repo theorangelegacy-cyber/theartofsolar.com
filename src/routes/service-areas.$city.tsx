@@ -16,6 +16,7 @@ import {
   cityFaqs,
   countyOf,
   nearbyCities,
+  pickHook,
 } from "@/data/seo";
 import { abs, breadcrumbSchema, faqSchema, ld, serviceSchema } from "@/data/schema";
 import { trackEvent } from "@/lib/leads";
@@ -35,20 +36,18 @@ export const Route = createFileRoute("/service-areas/$city")({
     const url = `${SITE_URL}/service-areas/${params.city}`;
     const title = `Solar Panel Removal and Reinstall in ${c.name}, FL`;
     // A short hook off the city's own blurb keeps all 55 descriptions different
-    // without pushing past the ~155 characters Google actually shows. Cut only at
-    // a real clause or sentence end, never mid-thought, and fall back to the
-    // city's own traits when neither is short enough to read properly.
-    // Cut at a comma only. Splitting on full stops mangles "St. Cloud" and
-    // "Port St. Lucie" into "St.", and a plain character cut ends mid-thought.
-    const clause = c.blurb.split(",")[0]!.trim();
+    // without pushing past the ~155 characters Google actually shows. pickHook
+    // takes the longest whole statement that still fits, so nothing ends
+    // mid-thought and "Port St. Lucie" never gets cut down to "St.". The city's
+    // own traits are the fallback when no part of the blurb reads properly short.
+    const clause = pickHook(c.blurb, 158 - 66 - c.name.length);
     const hook =
-      clause.length >= 25 && clause.length <= 70
-        ? clause
-        : k.hvhz
-          ? `${c.name} is inside Florida's hurricane zone`
-          : c.coastal
-            ? `${c.name} sits in salt air, so corrosion gets checked first`
-            : `${c.name} sits inland in ${k.name} County`;
+      clause ??
+      (k.hvhz
+        ? `${c.name} is inside Florida's hurricane zone`
+        : c.coastal
+          ? `${c.name} sits in salt air, so corrosion gets checked first`
+          : `${c.name} sits inland in ${k.name} County`);
     const desc = `${hook}. Solar removal, reinstall and repair in ${c.name}. Licensed, written quote.`;
     return {
       meta: [

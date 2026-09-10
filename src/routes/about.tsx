@@ -3,7 +3,7 @@ import { ContactDock, FacebookIcon, links } from "@/components/ContactDock";
 import { CtaBlock, PageHero, SiteFooter, SiteHeader, TrustStrip } from "@/components/SiteChrome";
 import { EXTENDED_AREAS, OWNER, SERVICES, SITE_URL } from "@/data/seo";
 import { abs, breadcrumbSchema, ld } from "@/data/schema";
-import { IMG } from "@/data/images";
+import { IMG, srcSet } from "@/data/images";
 import { trackEvent } from "@/lib/leads";
 
 export const Route = createFileRoute("/about")({
@@ -91,7 +91,10 @@ function AboutPage() {
       <section className="container-x grid items-center gap-8 py-12 sm:py-20 lg:grid-cols-2">
         <img
           src={IMG.crew}
+          srcSet={srcSet(IMG.crew)}
+          sizes="(min-width: 1024px) 50vw, 100vw"
           alt={`${OWNER} and crew on a roof during a solar reinstall`}
+          loading="lazy"
           width={1400}
           height={1050}
           className="aspect-[4/3] w-full rounded-3xl border border-line object-cover"

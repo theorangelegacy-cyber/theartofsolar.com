@@ -12,6 +12,7 @@ import { LeadForm } from "@/components/LeadForm";
 import { COUNTIES, SITE_URL, citiesInCounty } from "@/data/seo";
 import { RESCUES, RESCUE_FAQS } from "@/data/rescues";
 import { abs, breadcrumbSchema, faqSchema, ld, serviceSchema } from "@/data/schema";
+import { IMG } from "@/data/images";
 import { trackEvent } from "@/lib/leads";
 
 const HERO_IMG = "/img/rerack.webp";
@@ -28,10 +29,10 @@ export const Route = createFileRoute("/solar-company-out-of-business/")({
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
       { property: "og:url", content: URL },
-      { property: "og:image", content: abs(HERO_IMG) },
+      { property: "og:image", content: abs(IMG.og) },
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESC },
-      { name: "twitter:image", content: abs(HERO_IMG) },
+      { name: "twitter:image", content: abs(IMG.og) },
     ],
     links: [{ rel: "canonical", href: URL }],
     scripts: [

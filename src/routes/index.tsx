@@ -17,7 +17,7 @@ import {
   citiesInCounty,
 } from "@/data/seo";
 import { abs, faqSchema, ld } from "@/data/schema";
-import { CARD_SIZES, FULL_SIZES, GALLERY, IMG, srcSet } from "@/data/images";
+import { CARD_SIZES, FULL_SIZES, GALLERY, IMG, IMG_ALT, srcSet } from "@/data/images";
 import { trackEvent } from "@/lib/leads";
 
 export const Route = createFileRoute("/")({
@@ -210,7 +210,7 @@ function Home() {
                   src={s.img}
                   srcSet={srcSet(s.img)}
                   sizes={CARD_SIZES}
-                  alt={s.name}
+                  alt={IMG_ALT[s.img] ?? s.name}
                   loading="lazy"
                   width={1400}
                   height={1050}
@@ -424,6 +424,8 @@ function Home() {
         <div className="grid items-center gap-8 lg:grid-cols-2">
           <img
             src={IMG.crew}
+            srcSet={srcSet(IMG.crew)}
+            sizes="(min-width: 1024px) 50vw, 100vw"
             alt="Art of Solar crew on a roof with a ladder during a solar reinstall"
             loading="lazy"
             width={1400}

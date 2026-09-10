@@ -9,7 +9,7 @@ import {
   TrustStrip,
 } from "@/components/SiteChrome";
 import { LeadForm } from "@/components/LeadForm";
-import { CITY_BY_SLUG, SERVICES, SITE_URL } from "@/data/seo";
+import { CITY_BY_SLUG, SERVICES, SITE_URL, pickHook } from "@/data/seo";
 import {
   FL_COUNTY_BY_SLUG,
   REGION_NOTES,
@@ -18,7 +18,7 @@ import {
   type FlCounty,
 } from "@/data/florida";
 import { abs, breadcrumbSchema, faqSchema, ld, serviceSchema } from "@/data/schema";
-import { IMG, srcSet } from "@/data/images";
+import { IMG, IMG_ALT, srcSet } from "@/data/images";
 import { trackEvent } from "@/lib/leads";
 
 /** A town slug, the way the city pages build theirs. */
@@ -88,12 +88,11 @@ export const Route = createFileRoute("/counties/$county")({
     const c = loaderData.county;
     const url = `${SITE_URL}/counties/${params.county}`;
     const title = `Solar Panel Removal and Reinstall in ${c.name} County, FL`;
-    const clause = c.blurb.split(",")[0]!.trim();
-    const hook =
-      clause.length >= 25 && clause.length <= 70
-        ? clause
-        : `${c.name} County, ${c.region}`;
-    const desc = `${hook}. Solar detach and reset, re-racking and repair across ${c.name} County. Licensed, written quote.`;
+    // The longest whole statement out of the county's own blurb that still fits,
+    // so no description ends mid-sentence and no two counties read the same.
+    const tail = `. Licensed solar detach and reset, re-racking and repair in ${c.name} County.`;
+    const hook = pickHook(c.blurb, 158 - tail.length) ?? `${c.name} County, ${c.region}`;
+    const desc = `${hook}${tail}`;
     return {
       meta: [
         { title },
@@ -115,7 +114,8 @@ export const Route = createFileRoute("/counties/$county")({
             description: desc,
             url,
             image: IMG.og,
-            cityName: c.seat,
+            areaName: `${c.name} County, FL`,
+            areaType: "AdministrativeArea",
           }),
           breadcrumbSchema([
             { name: "Home", path: "/" },
@@ -303,7 +303,7 @@ function CountyPage() {
             src={IMG.rerack}
             srcSet={srcSet(IMG.rerack)}
             sizes="(min-width: 1024px) 40vw, 100vw"
-            alt="Solar array reinstalled on new flashed mounts"
+            alt={IMG_ALT[IMG.rerack] ?? "Solar array reinstalled on new flashed mounts"}
             width={800}
             height={600}
             loading="lazy"

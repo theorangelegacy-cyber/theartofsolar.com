@@ -101,24 +101,43 @@ export function faqSchema(faqs: { q: string; a: string }[]) {
   };
 }
 
-/** A single service, optionally pinned to one city. */
+/**
+ * A single service, optionally pinned to one place.
+ *
+ * A county page must say the county, not its county seat: naming Fort Lauderdale
+ * on a page whose title, heading and breadcrumb all say Broward County left
+ * Google with two different answers and no reason to trust either. Pass
+ * `cityName` for a town, or `areaName` plus `areaType` for anything larger.
+ */
 export function serviceSchema(opts: {
   name: string;
   description: string;
   url: string;
   image?: string;
+  /** A town. Named "... in Orlando, FL" and served as a City. */
   cityName?: string;
+  /** Anything that is not a town, written out in full, e.g. "Broward County, FL". */
+  areaName?: string;
+  areaType?: "AdministrativeArea" | "State" | "City";
 }) {
+  const place = opts.areaName ?? (opts.cityName ? `${opts.cityName}, FL` : null);
+  const placeType = opts.areaName ? (opts.areaType ?? "AdministrativeArea") : "City";
   return {
     "@context": "https://schema.org",
     "@type": "Service",
+    // One @id per page so the same service on the service page, the cost page
+    // and the city pages is one entity Google can join up, not four strangers.
+    "@id": `${opts.url}#service`,
     serviceType: opts.name,
-    name: opts.cityName ? `${opts.name} in ${opts.cityName}, FL` : opts.name,
+    name: place ? `${opts.name} in ${place}` : opts.name,
     description: opts.description,
     url: opts.url,
+    mainEntityOfPage: opts.url,
     ...(opts.image ? { image: abs(opts.image) } : {}),
     provider: { "@id": ORGANIZATION_ID },
-    areaServed: opts.cityName ? { "@type": "City", name: `${opts.cityName}, FL` } : AREA_SERVED,
+    // The full 65-item list belongs to the business block once, not to every
+    // Service block on all 147 pages.
+    areaServed: place ? { "@type": placeType, name: place } : { "@type": "State", name: "Florida" },
   };
 }
 

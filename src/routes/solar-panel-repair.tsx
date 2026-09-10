@@ -112,10 +112,10 @@ export const Route = createFileRoute("/solar-panel-repair")({
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
       { property: "og:url", content: URL },
-      { property: "og:image", content: abs(HERO_IMG) },
+      { property: "og:image", content: abs(IMG.og) },
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESC },
-      { name: "twitter:image", content: abs(HERO_IMG) },
+      { name: "twitter:image", content: abs(IMG.og) },
     ],
     links: [{ rel: "canonical", href: URL }],
     scripts: [

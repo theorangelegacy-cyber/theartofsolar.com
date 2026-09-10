@@ -10,14 +10,14 @@ import {
 } from "@/components/SiteChrome";
 import { GENERAL_FAQS, SERVICES, SITE_URL } from "@/data/seo";
 import { abs, breadcrumbSchema, ld } from "@/data/schema";
-import { IMG } from "@/data/images";
+import { IMG, IMG_ALT, srcSet } from "@/data/images";
 
 export const Route = createFileRoute("/services/")({
   head: () => {
     const url = `${SITE_URL}/services`;
-    const title = "Solar Re-Rack, Repair & Install Services | Art of Solar";
+    const title = "Solar Panel Removal, Repair & Install Services | Florida";
     const desc =
-      "Solar panel removal and reinstall for new roofs, orphaned system repair, leak repair at the mounts, inspections, storm repair and new systems. Orlando to Miami.";
+      "Solar panel removal and reinstall for new roofs, orphaned system repair, leak repair, inspections and storm repair. Orlando to Miami, licensed.";
     return {
       meta: [
         { title },
@@ -70,8 +70,11 @@ function ServicesPage() {
             >
               <img
                 src={s.img}
-                alt={s.name}
+                srcSet={srcSet(s.img)}
+                sizes="(min-width: 768px) 40vw, 100vw"
+                alt={IMG_ALT[s.img] ?? s.name}
                 loading={i === 0 ? "eager" : "lazy"}
+                fetchPriority={i === 0 ? "high" : undefined}
                 width={640}
                 height={400}
                 className="aspect-[16/10] h-full w-full object-cover"
