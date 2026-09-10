@@ -9,14 +9,7 @@ import {
   TrustStrip,
 } from "@/components/SiteChrome";
 import { LeadForm } from "@/components/LeadForm";
-import {
-  CITY_BY_SLUG,
-  DESC_MAX,
-  DESC_MIN,
-  SERVICES,
-  SITE_URL,
-  fitDescription,
-} from "@/data/seo";
+import { CITY_BY_SLUG, DESC_MAX, DESC_MIN, SERVICES, SITE_URL, fitDescription } from "@/data/seo";
 import {
   FL_COUNTY_BY_SLUG,
   REGION_NOTES,

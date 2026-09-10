@@ -10,14 +10,7 @@ import {
 } from "@/components/SiteChrome";
 import { LeadForm } from "@/components/LeadForm";
 import { COUNTIES, SITE_URL, citiesInCounty } from "@/data/seo";
-import {
-  abs,
-  breadcrumbSchema,
-  faqSchema,
-  ld,
-  serviceSchema,
-  webPageSchema,
-} from "@/data/schema";
+import { abs, breadcrumbSchema, faqSchema, ld, serviceSchema, webPageSchema } from "@/data/schema";
 import { IMG } from "@/data/images";
 import { trackEvent } from "@/lib/leads";
 

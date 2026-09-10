@@ -364,7 +364,10 @@ function Home() {
       <section className="container-x pb-12 sm:pb-16">
         <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
           <li>
-            <Link to="/solar-panel-repair" className="font-semibold text-navy hover:text-orange-deep">
+            <Link
+              to="/solar-panel-repair"
+              className="font-semibold text-navy hover:text-orange-deep"
+            >
               Solar panel repair
             </Link>
           </li>

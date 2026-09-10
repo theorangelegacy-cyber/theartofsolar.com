@@ -188,7 +188,10 @@ function ServicePage() {
                 one internal link on it, in the sitewide footer. Same words as
                 the footer, so nothing new is being written here. */}
             <li className="rounded-2xl border border-line bg-white p-5">
-              <Link to="/solar-panel-repair" className="font-semibold text-navy underline hover:text-orange-deep">
+              <Link
+                to="/solar-panel-repair"
+                className="font-semibold text-navy underline hover:text-orange-deep"
+              >
                 Solar panel repair
               </Link>
             </li>
