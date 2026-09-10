@@ -9,7 +9,14 @@ import {
   TrustStrip,
 } from "@/components/SiteChrome";
 import { LeadForm } from "@/components/LeadForm";
-import { CITY_BY_SLUG, SERVICES, SITE_URL, pickHook } from "@/data/seo";
+import {
+  CITY_BY_SLUG,
+  DESC_MAX,
+  DESC_MIN,
+  SERVICES,
+  SITE_URL,
+  fitDescription,
+} from "@/data/seo";
 import {
   FL_COUNTY_BY_SLUG,
   REGION_NOTES,
@@ -76,6 +83,47 @@ function countyFaqs(c: FlCounty) {
   return c.tier === 1 ? faqs : [faqs[0]!, faqs[1]!, faqs[4]!];
 }
 
+/**
+ * How a county description closes, longest first. The long one is what every
+ * county already used; the short one only gets reached when the long one leaves
+ * no room for a whole sentence out of the county's own writing.
+ */
+function countyTails(c: FlCounty): string[] {
+  return [
+    `. Licensed solar detach and reset, re-racking and repair in ${c.name} County.`,
+    `. Licensed solar detach and reset and repair in ${c.name} County.`,
+    `. Licensed solar detach and reset in ${c.name} County.`,
+  ];
+}
+
+/**
+ * Last resort, and only for a county whose three paragraphs have no sentence
+ * that cuts down into Google's window. Nothing here is new information: the
+ * hurricane zone, the coast, the county seat, the utility and whether the county
+ * is on the home route are all already on the page.
+ */
+function countyDesc(c: FlCounty): string {
+  const hooks = [
+    c.hvhz
+      ? `${c.name} County is inside Florida's High-Velocity Hurricane Zone, so every attachment on a reinstall carries documented product approval`
+      : null,
+    c.coastal
+      ? `${c.name} County is ${c.region} coast, so rails, clamps and grounding hardware get checked for corrosion before an array goes back up`
+      : null,
+    c.tier === 1
+      ? `${c.name} County is on our home route, so ${c.seat} and the towns around it get one licensed crew and normal scheduling`
+      : `${c.name} County is ${c.region} travel work, booked ahead around ${c.seat}, where homes are mostly on ${c.utility}`,
+    `${c.name} County, ${c.region}: ${c.seat} and the towns around it, on ${c.utility}`,
+  ].filter((h): h is string => h !== null);
+  const tails = countyTails(c);
+  for (const t of tails)
+    for (const h of hooks) {
+      const d = `${h}${t}`;
+      if (d.length >= DESC_MIN && d.length <= DESC_MAX) return d;
+    }
+  return `${hooks[hooks.length - 1]!}${tails[tails.length - 1]!}`;
+}
+
 export const Route = createFileRoute("/counties/$county")({
   loader: ({ params }) => {
     const county = FL_COUNTY_BY_SLUG[params.county];
@@ -88,11 +136,12 @@ export const Route = createFileRoute("/counties/$county")({
     const c = loaderData.county;
     const url = `${SITE_URL}/counties/${params.county}`;
     const title = `Solar Panel Removal and Reinstall in ${c.name} County, FL`;
-    // The longest whole statement out of the county's own blurb that still fits,
-    // so no description ends mid-sentence and no two counties read the same.
-    const tail = `. Licensed solar detach and reset, re-racking and repair in ${c.name} County.`;
-    const hook = pickHook(c.blurb, 158 - tail.length) ?? `${c.name} County, ${c.region}`;
-    const desc = `${hook}${tail}`;
+    // The longest whole statement out of the county's OWN writing that lands in
+    // Google's 120-158 window, so nothing ends mid-sentence, nothing reads thin
+    // and no two counties read the same. The blurb first, then the other two
+    // hand-written paragraphs, and only if the long closing line leaves no room
+    // does the shorter one get used. countyDesc is the last resort.
+    const desc = fitDescription([c.blurb, c.seen, c.detail], countyTails(c)) ?? countyDesc(c);
     return {
       meta: [
         { title },
@@ -357,6 +406,11 @@ function CountyPage() {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link to="/solar-panel-removal-cost" className="btn-base btn-navy w-full sm:w-auto">
               What it costs per panel
+            </Link>
+            {/* Same words as the footer. The repair page was reachable from one
+                sitewide footer link and nothing else. */}
+            <Link to="/solar-panel-repair" className="btn-base btn-ghost w-full sm:w-auto">
+              Solar panel repair
             </Link>
             <Link
               to="/solar-company-out-of-business"

@@ -358,6 +358,56 @@ function Home() {
         </div>
       </section>
 
+      {/* Six pages that carry the most specific searches on the site and had no
+          link from the home page, which is the strongest page there is. Same
+          words as the footer, deliberately: one row, no new wording. */}
+      <section className="container-x pb-12 sm:pb-16">
+        <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+          <li>
+            <Link to="/solar-panel-repair" className="font-semibold text-navy hover:text-orange-deep">
+              Solar panel repair
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/solar-panel-removal-cost"
+              className="font-semibold text-navy hover:text-orange-deep"
+            >
+              What removal costs
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/solar-detach-and-reset"
+              className="font-semibold text-navy hover:text-orange-deep"
+            >
+              Detach and reset for roofers
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/florida-solar-permit-law"
+              className="font-semibold text-navy hover:text-orange-deep"
+            >
+              Florida permit and licence rules
+            </Link>
+          </li>
+          <li>
+            <Link to="/counties" className="font-semibold text-navy hover:text-orange-deep">
+              All 67 Florida counties
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/solar-company-out-of-business"
+              className="font-semibold text-navy hover:text-orange-deep"
+            >
+              Installer out of business?
+            </Link>
+          </li>
+        </ul>
+      </section>
+
       {/* How it works */}
       <section className="bg-steel py-12 sm:py-20">
         <div className="container-x">

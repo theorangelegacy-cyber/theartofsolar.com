@@ -184,6 +184,14 @@ function ServicePage() {
               </Link>
               <p className="mt-2 text-sm text-muted-foreground">The existing roofer guide and contact route for a project that needs both crews.</p>
             </li>
+            {/* The repair page is the highest-priority page on the site and had
+                one internal link on it, in the sitewide footer. Same words as
+                the footer, so nothing new is being written here. */}
+            <li className="rounded-2xl border border-line bg-white p-5">
+              <Link to="/solar-panel-repair" className="font-semibold text-navy underline hover:text-orange-deep">
+                Solar panel repair
+              </Link>
+            </li>
           </ul>
         </section>
       )}

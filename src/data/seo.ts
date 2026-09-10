@@ -1008,14 +1008,87 @@ function firstSentence(text: string): string {
   }
   return out.trim().replace(/\.$/, "");
 }
+/** A word no whole statement can be cut off after. */
+const HOOK_DANGLE =
+  /\b(?:and|or|but|the|a|an|of|to|for|with|so|that|which|because|from|by|than|then|is|are|was|were|its|their|our)$/i;
+/** An opener that only means something with the half that follows it. */
+const HOOK_LEAD =
+  /^(?:because|when|while|if|although|though|since|after|before|unless|until|whereas|where|whether|once|as)\b/i;
 /**
- * The longest whole statement out of a blurb that still fits the budget.
- * Sentence first, then before the colon, then before the comma. Never a fragment.
+ * A comma is only a safe place to stop when the words after it start a new
+ * clause. "…subdivisions, which makes for clean, predictable work" can lose the
+ * "which" clause and still be a sentence; cutting it one comma later leaves
+ * "makes for clean", which is not. Contrast openers (but, though, except,
+ * rather) are deliberately missing: dropping those reverses what was said.
  */
-export function pickHook(blurb: string, budget: number): string | null {
-  const s = firstSentence(blurb);
-  const fits = [s, s.split(":")[0]!.trim(), s.split(":")[0]!.split(",")[0]!.trim()].filter(
-    (c) => c.length >= 25 && c.length <= budget,
-  );
+const HOOK_CLAUSE =
+  /^(?:and|so|which|who|where|while|with|plus|then|because|since|until|before|after|as|if|when|from|including|between|much|most|many|mostly|largely|often|usually|typically|some|up)\b/i;
+
+/**
+ * Every way of cutting one paragraph down to something that still reads as a
+ * whole statement, the sentence itself first: then the part before a colon or a
+ * semicolon, then the sentence with a trailing clause dropped at a comma. A cut
+ * that would leave a dangling word, orphan a subordinate opener or lop half a
+ * list off is not offered at all.
+ */
+function hookCandidates(text: string): string[] {
+  const whole = firstSentence(text);
+  const cuts: string[] = [];
+  for (const mark of [":", ";"]) {
+    const i = whole.indexOf(mark);
+    if (i > 0) cuts.push(whole.slice(0, i));
+  }
+  const chunks = whole.split(", ");
+  for (let n = chunks.length - 1; n >= 1; n--) {
+    if (!HOOK_CLAUSE.test(chunks[n]!.trim())) continue;
+    cuts.push(chunks.slice(0, n).join(", "));
+  }
+  const clean = cuts
+    .map((c) =>
+      c
+        .trim()
+        .replace(/[,;:]+$/, "")
+        .trim(),
+    )
+    .filter(
+      (c) =>
+        !HOOK_DANGLE.test(c) &&
+        !HOOK_LEAD.test(c) &&
+        (c.match(/\(/g) ?? []).length === (c.match(/\)/g) ?? []).length,
+    );
+  return [whole, ...clean];
+}
+
+/**
+ * The longest whole statement out of a blurb that lands between `floor` and
+ * `budget` characters. Never a fragment.
+ */
+export function pickHook(blurb: string, budget: number, floor = 25): string | null {
+  const fits = hookCandidates(blurb).filter((c) => c.length >= floor && c.length <= budget);
   return fits.length ? fits.sort((a, b) => b.length - a.length)[0]! : null;
+}
+
+/** The window Google actually shows. Shorter reads thin, longer gets cut off. */
+export const DESC_MIN = 120;
+export const DESC_MAX = 158;
+
+/**
+ * A meta description built out of the page's own writing.
+ *
+ * `sources` are the hand-written paragraphs that already exist for that place,
+ * best first. `tails` are the closing lines, longest first, so a page whose
+ * description already reads well keeps exactly the one it had and only the
+ * pages that do not fit drop to a shorter close or to their second paragraph.
+ * Returns null when nothing in the place's own words lands in the window, which
+ * leaves the caller to say something out of its own data instead.
+ */
+export function fitDescription(sources: string[], tails: string[]): string | null {
+  for (const tail of tails) {
+    for (const src of sources) {
+      if (!src) continue;
+      const hook = pickHook(src, DESC_MAX - tail.length, Math.max(25, DESC_MIN - tail.length));
+      if (hook) return `${hook}${tail}`;
+    }
+  }
+  return null;
 }

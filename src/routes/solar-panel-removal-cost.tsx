@@ -17,6 +17,7 @@ import {
   faqSchema,
   ld,
   serviceSchema,
+  webPageSchema,
 } from "@/data/schema";
 import { IMG } from "@/data/images";
 import { trackEvent } from "@/lib/leads";
@@ -128,6 +129,7 @@ export const Route = createFileRoute("/solar-panel-removal-cost")({
     links: [{ rel: "canonical", href: URL }],
     scripts: [
       ...ld(
+        webPageSchema({ name: TITLE, description: DESC, url: URL }),
         serviceSchema({
           name: "Solar Panel Removal and Reinstall",
           description: DESC,

@@ -3,4 +3,33 @@ User-agent: *
 Allow: /
 Disallow: /leads
 
+# The crawlers below are named on purpose. Every one of them already obeys the
+# catch-all above, so nothing changes today. Naming them is what stops a
+# careless catch-all rule later quietly cutting this site out of Google, Bing,
+# and out of ChatGPT, Claude and Perplexity answers. A named group does not
+# inherit the rules above it, so /leads is repeated in each one.
+User-agent: Googlebot
+Allow: /
+Disallow: /leads
+
+User-agent: Bingbot
+Allow: /
+Disallow: /leads
+
+User-agent: GPTBot
+Allow: /
+Disallow: /leads
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /leads
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /leads
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /leads
+
 Sitemap: https://theartofsolar.com/sitemap.xml

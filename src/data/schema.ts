@@ -65,14 +65,42 @@ export function organizationSchema() {
   };
 }
 
+/** The site itself. Referenced by @id from the page records. */
+export const WEBSITE_ID = `${SITE_URL}/#website`;
+
 export function websiteSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "@id": `${SITE_URL}/#website`,
+    "@id": WEBSITE_ID,
     url: SITE_URL,
     name: BRAND,
     publisher: { "@id": ORGANIZATION_ID },
+  };
+}
+
+/**
+ * One guide page as a record in its own right, joined to the site and to the
+ * business by @id rather than repeating either.
+ *
+ * Deliberately WebPage and not Article. An Article record wants a real
+ * datePublished and a named author byline, and neither is visible anywhere on
+ * these pages. Making either one up to earn a richer schema type is exactly the
+ * kind of thing that gets structured data distrusted.
+ */
+export function webPageSchema(opts: { name: string; description: string; url: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${opts.url}#webpage`,
+    name: opts.name,
+    description: opts.description,
+    url: opts.url,
+    inLanguage: "en-US",
+    mainEntityOfPage: opts.url,
+    isPartOf: { "@id": WEBSITE_ID },
+    publisher: { "@id": ORGANIZATION_ID },
+    about: { "@id": ORGANIZATION_ID },
   };
 }
 

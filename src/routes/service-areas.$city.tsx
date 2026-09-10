@@ -11,16 +11,57 @@ import {
 import { LeadForm } from "@/components/LeadForm";
 import {
   CITY_BY_SLUG,
+  DESC_MAX,
+  DESC_MIN,
   SERVICES,
   SITE_URL,
   cityFaqs,
   countyOf,
+  fitDescription,
   nearbyCities,
-  pickHook,
+  type City,
 } from "@/data/seo";
 import { abs, breadcrumbSchema, faqSchema, ld, serviceSchema } from "@/data/schema";
 import { trackEvent } from "@/lib/leads";
 import { IMG } from "@/data/images";
+
+/**
+ * How a town description closes, longest first. The long one is what every town
+ * already used; the shorter ones only get reached when it leaves no room for a
+ * whole sentence out of the town's own writing.
+ */
+function cityTails(c: City): string[] {
+  return [
+    `. Solar removal, reinstall and repair in ${c.name}. Licensed, written quote.`,
+    `. Solar removal and reinstall in ${c.name}. Licensed, written quote.`,
+    `. Solar removal and reinstall in ${c.name}. Written quote.`,
+  ];
+}
+
+/**
+ * Last resort, and only for a town whose three paragraphs have no sentence that
+ * cuts down into Google's window. Nothing here is new information: the hurricane
+ * zone, the salt air and the county are all already on the page.
+ */
+function cityDesc(c: City, hvhz: boolean | undefined): string {
+  const hooks = [
+    hvhz
+      ? `${c.name} is inside Florida's High-Velocity Hurricane Zone, so every attachment on a reinstall carries documented product approval`
+      : null,
+    c.coastal
+      ? `${c.name} sits in salt air, so rails, clamps and grounding hardware get checked for corrosion before an array goes back up`
+      : null,
+    `${c.name} is in ${c.county} County, on our home route from Orlando to Miami, so this is normal scheduling and not a travel job`,
+    `${c.name}, ${c.county} County`,
+  ].filter((h): h is string => h !== null);
+  const tails = cityTails(c);
+  for (const t of tails)
+    for (const h of hooks) {
+      const d = `${h}${t}`;
+      if (d.length >= DESC_MIN && d.length <= DESC_MAX) return d;
+    }
+  return `${hooks[hooks.length - 1]!}${tails[tails.length - 1]!}`;
+}
 
 export const Route = createFileRoute("/service-areas/$city")({
   loader: ({ params }) => {
@@ -35,20 +76,14 @@ export const Route = createFileRoute("/service-areas/$city")({
     const k = countyOf(c);
     const url = `${SITE_URL}/service-areas/${params.city}`;
     const title = `Solar Panel Removal and Reinstall in ${c.name}, FL`;
-    // A short hook off the city's own blurb keeps all 55 descriptions different
-    // without pushing past the ~155 characters Google actually shows. pickHook
-    // takes the longest whole statement that still fits, so nothing ends
-    // mid-thought and "Port St. Lucie" never gets cut down to "St.". The city's
-    // own traits are the fallback when no part of the blurb reads properly short.
-    const clause = pickHook(c.blurb, 158 - 66 - c.name.length);
-    const hook =
-      clause ??
-      (k.hvhz
-        ? `${c.name} is inside Florida's hurricane zone`
-        : c.coastal
-          ? `${c.name} sits in salt air, so corrosion gets checked first`
-          : `${c.name} sits inland in ${k.name} County`);
-    const desc = `${hook}. Solar removal, reinstall and repair in ${c.name}. Licensed, written quote.`;
+    // A hook off the town's own writing keeps all 55 descriptions different
+    // without pushing past the ~155 characters Google actually shows, and without
+    // any of them reading thin at 100. fitDescription takes the longest whole
+    // statement that lands in the window, so nothing ends mid-thought and
+    // "Port St. Lucie" never gets cut down to "St.". The blurb first, then the
+    // town's other two hand-written paragraphs, then a shorter closing line. The
+    // town's own traits are the last resort.
+    const desc = fitDescription([c.blurb, c.seen, c.detail], cityTails(c)) ?? cityDesc(c, k.hvhz);
     return {
       meta: [
         { title },
@@ -174,6 +209,11 @@ function CityPage() {
           <div className="mt-6 grid gap-3">
             <Link to="/solar-panel-removal-cost" className="btn-base btn-navy w-full">
               What it costs per panel
+            </Link>
+            {/* Same words as the footer. The repair page was reachable from one
+                sitewide footer link and nothing else. */}
+            <Link to="/solar-panel-repair" className="btn-base btn-ghost w-full">
+              Solar panel repair
             </Link>
             <Link to="/solar-company-out-of-business" className="btn-base btn-ghost w-full">
               Installer out of business?

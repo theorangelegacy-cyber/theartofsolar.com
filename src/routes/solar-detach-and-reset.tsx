@@ -10,7 +10,14 @@ import {
 } from "@/components/SiteChrome";
 import { LeadForm } from "@/components/LeadForm";
 import { COUNTIES, SITE_URL, citiesInCounty } from "@/data/seo";
-import { abs, breadcrumbSchema, faqSchema, ld, serviceSchema } from "@/data/schema";
+import {
+  abs,
+  breadcrumbSchema,
+  faqSchema,
+  ld,
+  serviceSchema,
+  webPageSchema,
+} from "@/data/schema";
 import { IMG } from "@/data/images";
 import { trackEvent } from "@/lib/leads";
 
@@ -71,6 +78,7 @@ export const Route = createFileRoute("/solar-detach-and-reset")({
     links: [{ rel: "canonical", href: URL }],
     scripts: [
       ...ld(
+        webPageSchema({ name: TITLE, description: DESC, url: URL }),
         serviceSchema({
           name: "Solar Detach and Reset",
           description: DESC,
