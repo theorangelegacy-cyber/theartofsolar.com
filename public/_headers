@@ -30,5 +30,5 @@
 /logo-art-of-solar.svg
   Cache-Control: public, max-age=604800
 
-/site.webmanifest
+/manifest.json
   Cache-Control: public, max-age=86400
