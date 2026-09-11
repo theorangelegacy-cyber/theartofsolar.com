@@ -14,7 +14,7 @@ import { readdirSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 const DIR = resolve("public/img");
-const WIDTHS = [640, 1024];
+const WIDTHS = [640, 800, 1024];
 
 const sources = readdirSync(DIR).filter(
   (f) => f.endsWith(".webp") && !/-\d+\.webp$/.test(f), // skip files we made

@@ -94,8 +94,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     scripts: [...ld(organizationSchema(), websiteSchema())],
     links: [
       { rel: "stylesheet", href: appCss },
+      // The SVG for modern browsers, and real bitmaps for everyone else: Google
+      // only shows a site's icon in search results from a 48px-multiple bitmap,
+      // and iPhones ignore an SVG touch icon. scripts/icons.mjs makes the files.
+      { rel: "icon", href: "/favicon.ico", sizes: "32x32" },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
-      { rel: "apple-touch-icon", href: "/logo-art-of-solar.svg" },
+      { rel: "icon", href: "/favicon-48x48.png", type: "image/png", sizes: "48x48" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
+      { rel: "manifest", href: "/site.webmanifest" },
       { rel: "sitemap", type: "application/xml", href: `${SITE_URL}/sitemap.xml` },
       {
         rel: "preload",

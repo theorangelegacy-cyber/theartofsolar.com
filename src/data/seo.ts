@@ -7,10 +7,14 @@
 export const SITE_URL = "https://theartofsolar.com";
 export const BRAND = "Art of Solar";
 export const OWNER = "Artem Sevbo";
+/** Artem's public work profile. Lets Google tie the person on the About page to the company. */
+export const OWNER_LINKEDIN = "https://www.linkedin.com/in/artem-sevbo-89458117/";
 export const FACEBOOK_URL = "https://www.facebook.com/ArtofSolarEnergy";
 
 export const BUSINESS = {
   name: BRAND,
+  /** The registered company name, as on the Florida Division of Corporations record. */
+  legalName: "Art of Solar, LLC",
   owner: OWNER,
   /**
    * Artem's phone number goes here, digits and formatting, e.g. "+1-561-555-0100"
@@ -28,7 +32,12 @@ export const BUSINESS = {
   country: "US",
   foundingYear: "2020",
   priceRange: "$$",
-  logo: `${SITE_URL}/logo-art-of-solar.svg`,
+  /**
+   * A bitmap, not the SVG: Google's logo rules for the business card in search
+   * want a real 112px-or-bigger raster it can resize. scripts/icons.mjs makes it
+   * from the SVG, so the artwork is still the one file.
+   */
+  logo: `${SITE_URL}/icon-512.png`,
   /** Straight from the Facebook page, plus what the work actually is. */
   description:
     "Private, highly experienced solar installer specializing in residential photovoltaic, pool and hot water systems. Solar panel removal and reinstall for re-roofs, re-racking, troubleshooting, inverter repair, leak repair at the mounts, and service for orphaned systems whose installer went out of business. Licensed and insured. Orlando to Miami.",

@@ -1,4 +1,13 @@
-import { BRAND, BUSINESS, CITIES, COUNTIES, OWNER, SERVICES, SITE_URL } from "./seo";
+import {
+  BRAND,
+  BUSINESS,
+  CITIES,
+  COUNTIES,
+  OWNER,
+  OWNER_LINKEDIN,
+  SERVICES,
+  SITE_URL,
+} from "./seo";
 import { IMG } from "./images";
 
 /** Turn a site-relative path into a full https:// address. */
@@ -22,14 +31,35 @@ export function organizationSchema() {
     "@type": ["HomeAndConstructionBusiness", "LocalBusiness"],
     "@id": ORGANIZATION_ID,
     name: BRAND,
+    legalName: BUSINESS.legalName,
     url: SITE_URL,
     logo: BUSINESS.logo,
-    image: abs(IMG.og),
-    ...(BUSINESS.phone ? { telephone: BUSINESS.phone } : {}),
+    // Google asks for a wide, a 4:3 and a square picture of the business so
+    // it can fit whichever card it draws. Share card, crew photo, icon.
+    image: [abs(IMG.og), abs(IMG.crew), BUSINESS.logo],
+    ...(BUSINESS.phone
+      ? {
+          telephone: BUSINESS.phone,
+          contactPoint: {
+            "@type": "ContactPoint",
+            telephone: BUSINESS.phone,
+            contactType: "customer service",
+            areaServed: "US-FL",
+            availableLanguage: "English",
+          },
+        }
+      : {}),
     email: BUSINESS.email,
     priceRange: BUSINESS.priceRange,
+    currenciesAccepted: "USD",
     description: BUSINESS.description,
-    founder: { "@type": "Person", name: OWNER },
+    founder: {
+      "@type": "Person",
+      name: OWNER,
+      jobTitle: "Owner",
+      worksFor: { "@id": ORGANIZATION_ID },
+      sameAs: [OWNER_LINKEDIN],
+    },
     foundingDate: BUSINESS.foundingYear,
     sameAs: [BUSINESS.facebook],
     address: {

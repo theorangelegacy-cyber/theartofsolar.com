@@ -65,7 +65,11 @@ const NO_1024 = new Set(["/img/logo-photo.webp"]);
 export function srcSet(src: string): string {
   if (!src.endsWith(".webp")) return "";
   const base = src.slice(0, -".webp".length);
-  const parts = [`${base}-640.webp 640w`];
+  // The 800 copy is the one a phone actually wants: a 412px-wide screen at a
+  // 1.75x pixel density needs about 720px, and without it the browser skipped
+  // straight from 640 to the 1024 file, roughly 390 KB of extra download on the
+  // home page. Every original is at least 960 wide, so every photo has one.
+  const parts = [`${base}-640.webp 640w`, `${base}-800.webp 800w`];
   if (!NO_1024.has(src)) parts.push(`${base}-1024.webp 1024w`);
   parts.push(`${src} 1800w`);
   return parts.join(", ");
