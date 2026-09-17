@@ -23,7 +23,9 @@ export const BUSINESS = {
    */
   phone: "+1-305-790-7079",
   phoneDisplay: "(305) 790-7079",
-  email: "info@artofsolarenergy.com",
+  // info@artofsolarenergy.com bounced: that domain does not exist (checked 2026-09-17),
+  // so every visitor who emailed it was lost. JP's real inbox until the owner has one.
+  email: "theorangelegacy@gmail.com",
   facebook: FACEBOOK_URL,
   /** Art of Solar, LLC is registered in Plantation (Broward County). Service-area business, no showroom. */
   locality: "Plantation",
